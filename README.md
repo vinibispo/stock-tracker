@@ -79,12 +79,14 @@ stock-tracker/
 The project is structured to ensure reusability, scalability, and maintainability. Below is a description of the key components in the application:
 
 1. **StockCard**
+
 *Purpose*: Displays individual stock information, including the symbol, current price, and customizable alert status.
 *Usage*:
 Displays data in a concise and visually appealing format using Material-UI's Card component.
 Highlights when a stock price reaches the alert threshold.
 
 2. **TopCards**
+
 *Purpose*: A horizontal scrollable list of stock cards.
 *Key Features*:
 - Dynamically updates to show the latest stock information.
@@ -93,12 +95,14 @@ Highlights when a stock price reaches the alert threshold.
 Built with Material-UI's AppBar and Stack components for responsiveness.
 Integrates with the WebSocket service to ensure live updates.
 3. **LeftForm**
+
 *Purpose*: A form for adding stocks to track.
 *Key Features*:
 - Dropdown menu for selecting stock symbols.
 - Input field for setting alert thresholds.
 - Focus management to improve accessibility and usability.
-4. Charts
+4. **Charts**
+
 *Purpose*: Visualizes stock price trends using an interactive chart.
 *Key Features*:
 - Displays real-time data points fetched from WebSocket updates.
