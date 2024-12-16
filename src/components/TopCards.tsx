@@ -1,7 +1,8 @@
 import MuiToolbar from '@mui/material/Toolbar'
 import { tabsClasses } from '@mui/material/Tabs'
-import { AppBar, Stack, styled } from '@mui/material'
+import { AppBar, Box, Button, Stack, styled, Typography } from '@mui/material'
 import StockCard from './StockCard'
+import { useStock } from '../hooks/useStock'
 
 const Toolbar = styled(MuiToolbar)({
   width: '100%',
@@ -20,60 +21,16 @@ const Toolbar = styled(MuiToolbar)({
 })
 
 export default function TopCards() {
-  const token: string = import.meta.env.VITE_FINNHUB_API_KEY
-  console.log(token)
-  // const socketRef = useRef(new WebSocket(`wss://ws.finnhub.io?token=${token}`))
-
-  // useEffect(() => {
-  //   const socket = socketRef.current
-  //   socket.addEventListener("open", (event) => {
-  //     socket.send(JSON.stringify({ type: "subscribe", symbol: "BTC-USD" }))
-  //   })
-  //
-  //   socket.addEventListener("message", event => {
-  //     const parsedJSON = JSON.parse(event.data)
-  //     console.log(parsedJSON.type)
-  //   })
-  // }, [])
-
-  const stocks = [
-    {
-      name: "BTC-USD",
-      percentage: 1.88,
-      value: 103342.2,
-      alertValue: 1968.84
-    },
-    {
-      name: "ETH-USD",
-      percentage: 0.86,
-      value: 3903.69,
-      alertValue: 33.51
-    },
-    {
-      name: "EUR/USD",
-      percentage: 0.34,
-      value: 1.0502,
-      alertValue: 0.0036
-    },
-    {
-      name: "GBP/USD",
-      percentage: -0.42,
-      value: 1.262,
-      alertValue: 0
-    },
-    {
-      name: "AAPL",
-      percentage: 0.07,
-      value: 248.13,
-      alertValue: 0.17,
-    }
-  ]
+  const { stocks, stockSymbolInput } = useStock()
+  const handleGoToLeftForm = () => {
+    if (stockSymbolInput.current) stockSymbolInput.current.focus()
+  }
   return (
     <AppBar
       component="header"
       position="fixed"
       sx={{
-        display: { xs: 'auto'},
+        display: { xs: 'auto' },
         boxShadow: 0,
         bgcolor: 'background.paper',
         backgroundImage: 'none',
@@ -83,25 +40,39 @@ export default function TopCards() {
       }}
     >
       <Toolbar variant="regular">
-        <Stack
-          direction="row"
-          sx={{
-            alignItems: 'center',
-            flexGrow: 1,
-            width: '100%',
-            gap: 1,
-          }}
-        >
+        {stocks.length ? (
           <Stack
             direction="row"
-            spacing={1}
-            sx={{ justifyContent: 'center', alignItems: 'center', gap: 1, padding: 1, overflowX: { xs: 'scroll', md: 'hidden' } }}
+            sx={{
+              alignItems: 'center',
+              flexGrow: 1,
+              width: '100%',
+              gap: 1,
+            }}
           >
-            {stocks.map(stock => (
-              <StockCard currency={stock.name} value={stock.value} percentage={stock.percentage} alertValue={stock.alertValue} key={stock.name} />
-            ))}
+            <Stack
+              direction="row"
+              spacing={1}
+              sx={{ justifyContent: 'center', alignItems: 'center', gap: 1, padding: 1, overflowX: 'scroll', whiteSpace: 'nowrap', flexWrap: 'nowrap' }}
+            >
+              {stocks.map(stock => (
+                <StockCard currency={stock.symbol} value={stock.price} alertValue={stock.alertPrice} key={stock.symbol} />
+              ))}
+            </Stack>
           </Stack>
-        </Stack>
+        ) : (
+          <Box sx={{ textAlign: 'center', marginTop: 4, width: '100%' }}>
+            <Typography variant="h6" gutterBottom>
+              No stocks being tracked
+            </Typography>
+            <Typography variant="body2" color="text.secondary" gutterBottom>
+              Add stocks to monitor their real-time performance.
+            </Typography>
+            <Button variant="contained" color="primary" onClick={handleGoToLeftForm}>
+              Add Stock
+            </Button>
+          </Box>
+        )}
       </Toolbar>
     </AppBar>
   )

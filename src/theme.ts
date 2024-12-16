@@ -1,4 +1,8 @@
-import createThemeWithVars from "@mui/material/styles/createThemeWithVars"
+import { createTheme } from "@mui/material"
 
-const theme = createThemeWithVars()
+const theme = createTheme({
+  palette: {
+    mode: 'dark'
+  }
+})
 export default theme

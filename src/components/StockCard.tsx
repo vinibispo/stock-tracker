@@ -3,16 +3,19 @@ import { Card as MuiCard, CardContent, Typography, Box, useTheme } from '@mui/ma
 type StockCardProps = {
   currency: string,
   value: number,
-  percentage: number,
   alertValue?: number
 }
-export default function StockCard({ currency, value, percentage, alertValue = 0 }: StockCardProps) {
+export default function StockCard({ currency, value, alertValue = 0 }: StockCardProps) {
+  let percentage = (value - alertValue) / value * 100
+  if (value == 0) {
+    percentage = 0
+  }
   return (
-    <MuiCard sx={{ width: { xs: '100%', sm: 220 } }}>
+    <MuiCard sx={{ width: { xs: '100%', sm: 220, minWidth: 220 } }}>
       <CardContent sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 1 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-around', width: '100%', alignItems: 'center' }} flexDirection={{md: 'row', xs: 'column'  }}>
           <Typography component="span" variant='subtitle1'>{currency}</Typography>
-          <Typography component="span" variant='subtitle1'>{value}</Typography>
+          <Typography component="span" variant='subtitle1'>{value.toFixed(2)}</Typography>
         </Box>
         <Percentage percentage={percentage} alertValue={alertValue} />
       </CardContent>
@@ -29,8 +32,8 @@ function Percentage({percentage, alertValue }: { percentage: number, alertValue:
     <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%', color }}>
       {icon}
       <Typography variant='body2'>
-        {percentage.toFixed(2)}%{' '}
-        <Typography component="span" variant='caption'>({alertValue})</Typography>
+        {percentage == 0 ? '-'  : percentage.toFixed(2)}%{' '}
+        <Typography component="span" variant='caption'>({alertValue.toFixed(2)})</Typography>
       </Typography>
     </Box>
   )

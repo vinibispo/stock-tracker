@@ -1,49 +1,67 @@
-import { Box, Container, Typography, Grid2 as Grid, Autocomplete, TextField, Card, CardContent, Button } from "@mui/material"
+import { Box, Grid2 as Grid } from "@mui/material"
 import TopCards from "./components/TopCards"
-import { LineChart } from "@mui/x-charts"
+import LeftForm from "./components/LeftForm"
+import { useEffect } from "react"
+import { useStock } from "./hooks/useStock"
+import { API_KEY } from "./constants"
+import StockCharts from "./components/StockCharts"
 
+type TradeWebSocketMessage = {
+  s: string
+  t: number
+  p: number
+}
 function App() {
+
+  const { symbols, onAddStockOnly } = useStock()
+  useEffect(() => {
+    const token = API_KEY
+    const socket = new WebSocket(`wss://ws.finnhub.io?token=${token}`)
+    socket.addEventListener("open", () => {
+      console.log("WebSocket connected")
+      symbols.forEach(symbol =>
+        socket.send(JSON.stringify({ type: "subscribe", symbol }))
+      )
+
+    })
+
+    socket.addEventListener("message", (event) => {
+      const { type, data } = JSON.parse(event.data)
+      switch (type) {
+        case 'trade': {
+          data.forEach((trade: TradeWebSocketMessage) => {
+            onAddStockOnly({
+              symbol: trade.s,
+              timestamp: trade.t,
+              price: trade.p,
+              alertPrice: 0
+            })
+          })
+        }
+      }
+    })
+
+    return () => {
+      symbols.forEach(symbol => socket.send(JSON.stringify({ type: "unsubscribe", symbol })))
+      socket.close()
+    }
+  }, [onAddStockOnly, symbols])
 
   return (
     <Box sx={{ display: 'flex', width: '100%' }} flexDirection='column'>
       <TopCards />
-      <Grid container spacing={2} sx={{ marginTop: 10 }}>
+      <Grid container spacing={2} sx={{ marginTop: 30 }}>
         <Grid size={3}>
           <LeftForm />
         </Grid>
         <Grid size={9}>
-          <Charts />
+          <StockCharts />
         </Grid>
       </Grid>
     </Box>
   )
 }
 
-function LeftForm() {
-  const options = [{ label: 'My Currency' }]
-  return (
-    <Container>
-      <Card>
-        <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <Autocomplete renderInput={(params) => <TextField {...params} label="Select Stock" />}
-            options={options}
-          />
-          <TextField label="Price Alert" />
-          <Button variant="contained">Add Stock</Button>
-        </CardContent>
-      </Card>
-    </Container>
-  )
-}
 
-function Charts() {
-  return (
-    <Container>
-      <Box sx={{ flexGrow: 1 }}>
-        <LineChart xAxis={[{ data: [10, 20, 30, 40, 50]}]} series={[{ data: [1, 2, 3, 5, 4] }]} height={400} width={300} />
-      </Box>
-    </Container>
-  )
-}
 
 export default App
