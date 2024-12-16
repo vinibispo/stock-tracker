@@ -1,34 +1,48 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Box, Container, Typography, Grid2 as Grid, Autocomplete, TextField, Card, CardContent, Button } from "@mui/material"
+import TopCards from "./components/TopCards"
+import { LineChart } from "@mui/x-charts"
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <Box sx={{ display: 'flex', width: '100%' }} flexDirection='column'>
+      <TopCards />
+      <Grid container spacing={2} sx={{ marginTop: 10 }}>
+        <Grid size={3}>
+          <LeftForm />
+        </Grid>
+        <Grid size={9}>
+          <Charts />
+        </Grid>
+      </Grid>
+    </Box>
+  )
+}
+
+function LeftForm() {
+  const options = [{ label: 'My Currency' }]
+  return (
+    <Container>
+      <Card>
+        <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Autocomplete renderInput={(params) => <TextField {...params} label="Select Stock" />}
+            options={options}
+          />
+          <TextField label="Price Alert" />
+          <Button variant="contained">Add Stock</Button>
+        </CardContent>
+      </Card>
+    </Container>
+  )
+}
+
+function Charts() {
+  return (
+    <Container>
+      <Box sx={{ flexGrow: 1 }}>
+        <LineChart xAxis={[{ data: [10, 20, 30, 40, 50]}]} series={[{ data: [1, 2, 3, 5, 4] }]} height={400} width={300} />
+      </Box>
+    </Container>
   )
 }
 
