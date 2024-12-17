@@ -45,7 +45,8 @@ export default function LeftForm() {
             render={({ field }) => {
               const { value, onChange } = field
               return <Autocomplete
-                renderInput={(params) => <TextField {...field} {...params} label="Select Stock" inputRef={stockSymbolInput} error={!!errors.symbol} helperText={errors.symbol?.message} />}
+                isOptionEqualToValue={(opt, val) => opt.value === val.value}
+                renderInput={(params) => <TextField {...params} label="Select Stock" inputRef={stockSymbolInput} error={!!errors.symbol} helperText={errors.symbol?.message} />}
                 options={options}
                 getOptionLabel={opt => opt.label}
                 getOptionKey={opt => opt.value}
