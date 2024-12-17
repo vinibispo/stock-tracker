@@ -2,6 +2,7 @@ import { MutableRefObject } from "react"
 
 export type StockOption = {
   label: string
+  value: string
 }
 export type Stock = {
   symbol: string

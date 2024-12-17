@@ -42,12 +42,19 @@ export default function LeftForm() {
           <Controller
             name="symbol"
             control={control}
-            render={({ field }) => (
-              <Autocomplete
+            render={({ field }) => {
+              const { value, onChange } = field
+              return <Autocomplete
                 renderInput={(params) => <TextField {...field} {...params} label="Select Stock" inputRef={stockSymbolInput} error={!!errors.symbol} helperText={errors.symbol?.message} />}
                 options={options}
+                getOptionLabel={opt => opt.label}
+                getOptionKey={opt => opt.value}
+                value={value ? options.find(opt => opt.value == value) : null}
+                onChange={(_event, newValue) => {
+                  onChange(newValue ? newValue.value : null)
+                }}
               />
-            )}
+            }}
           />
           <Controller
             name="alertPrice"

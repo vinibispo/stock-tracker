@@ -31,7 +31,8 @@ export const fetchSymbols: () => Promise<StockOption[]> = async() => {
 
   for (const response of data) {
     stockOptions.push({
-      label: response.symbol
+      label: response.description,
+      value: response.symbol
     })
   }
   return stockOptions
